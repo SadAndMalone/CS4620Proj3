@@ -68,15 +68,34 @@ int main(void)
 			}
 
 			// replace with your statement
-			if (selection == 3) {
-				return 0;
-			}
-			res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); 
+			if(selection == 1) {
+				//First Name Search
+				string fname;
+				cout << "Enter the First Name of the interred you wish to search for.\n";
+				cin >> fname;
 
-			while (res->next()){
-				cout << "\t... MySQL replies: " << res->getString("_message") << endl;
-				cout << "\t... say it again, MySQL" << endl;
-				cout << "\t....MySQL replies: " << res->getString(1) << endl;
+				res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); 
+				while (res->next()){
+					cout << "\t... MySQL replies: " << res->getString("_message") << endl;
+					cout << "\t... say it again, MySQL" << endl;
+					cout << "\t....MySQL replies: " << res->getString(1) << endl;
+				}
+			}
+			else if(selection == 2) {
+				//Section/Lot
+				
+				int section;
+				cout << "Sections:\n 1) N/A\n 2) BC E\n 3) BC W\n 4) NC A\n 5) NC B\n 6) NC C\n 7) NC D\n 8) NC E\n";
+				cout << "9) NC E Row B\n 10) NC E Row D\n 11) NC E Row E\n 13) O/C\n 14) OC\n 15) OS\n 16) OS Memory Garden\n\n Which Section would you like to view?\n";
+				cin >> section
+
+				res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); 
+				while (res->next()){
+					cout << "\t... MySQL replies: " << res->getString("_message") << endl;
+					cout << "\t... say it again, MySQL" << endl;
+					cout << "\t....MySQL replies: " << res->getString(1) << endl;
+				}
+
 			}
 
 			// Release unused resources
