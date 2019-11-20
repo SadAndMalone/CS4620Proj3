@@ -2,7 +2,7 @@
 // An example from the web
 // To make it work on voyager it must be compiled as such:
 //
-// g++ -Wall -o mysql_test -I/usr/include/mysql-cppconn-8/mysql -I/usr/include/mysql-cppconn-8/jdbc mysql_test.cpp -L/usr/lib64 -lmysqlcppconn 
+// g++ -Wall -o JacobRobert -I/usr/include/mysql-cppconn-8/mysql -I/usr/include/mysql-cppconn-8/jdbc JacobRobert.cpp -L/usr/lib64 -lmysqlcppconn 
 //
 
 // To use c++ libraries
@@ -58,36 +58,61 @@ int main(void)
 
 		stmt = con->createStatement();
 
+		int selection = 0;
+
 		while (selection != 3) {
-			int selection;
 			cout << "Select Option\n 1) Search by First Name\n 2) Display Section/Lot\n 3) Quit\n\n";
 			cin >> selection;
+
 
 			if (selection < 1 || selection > 3) {
 				cout << "Please enter a your choice as a number between 1 and 3\n";
 			}
 
+			if(selection == 3) {
+				cout << "Goodbye\n\n";
+				return EXIT_SUCCESS;
+			}
+
 			// replace with your statement
-			if(selection == 1) {
+			else if(selection == 1) {
 				//First Name Search
 				string fname;
-				cout << "Enter the First Name of the interred you wish to search for.\n";
+				cout << "Enter the First Name of the owner you wish to search for.\n";
 				cin >> fname;
 
-				res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); 
+				//Query to find all owners with first name provided by user
+				res = stmt->executeQuery("SELECT First_Name, Last_Name, Address_Street, Address_City, Address_State, Address_ZIP FROM OWNER WHERE First_Name = '" + fname + "'"); 
+
+				cout << "\n Owner Information \n";
 				while (res->next()){
-					cout << "\t... MySQL replies: " << res->getString("_message") << endl;
-					cout << "\t... say it again, MySQL" << endl;
-					cout << "\t....MySQL replies: " << res->getString(1) << endl;
+					cout << "Name:\t" << res->getString(1) << " " <<  res->getString(2) << endl;
+					cout << "Address:\t" << res->getString(3) << endl << res->getString(4) << ", " << res->getString(5) << " " << res->getString(6) << endl << endl;
 				}
+				string lname;
+				cout << "Enter the last name of the owner you are looking for.\n";
+				cin >> lname;
+
+				//Query to find all owned graves by the owner being search for.
+				res = stmt->executeQuery("SELECT Grave_Number, Style, Lot_Name, Section_Name FROM GRAVE LEFT JOIN LOT ON LOT.Lot_ID = GRAVE.Lot_ID LEFT JOIN SECTION ON SECTION.Section_ID = LOT.Section_ID WHERE GRAVE.Owner_ID IN (SELECT Owner_ID FROM OWNER WHERE First_Name = '" + fname + "' AND Last_Name = '" + lname + "')");
+
+				cout << "Graves Owned by " << fname << " " << lname << endl;
+				while (res->next()) {
+					cout << "\tGrave Number:\t" << res->getString(1) << endl;
+					cout << "\tGrave Style:\t" << res->getString(2) << endl;
+					cout << "\tLot:\t\t" << res->getString(3) << endl;
+					cout << "\tSection:\t" << res->getString(4) << endl << endl;
+				}
+
+							
 			}
 			else if(selection == 2) {
 				//Section/Lot
 				
 				int section;
-				cout << "Sections:\n 1) N/A\n 2) BC E\n 3) BC W\n 4) NC A\n 5) NC B\n 6) NC C\n 7) NC D\n 8) NC E\n";
-				cout << "9) NC E Row B\n 10) NC E Row D\n 11) NC E Row E\n 13) O/C\n 14) OC\n 15) OS\n 16) OS Memory Garden\n\n Which Section would you like to view?\n";
-				cin >> section
+				cout << "Sections:\n 1) N/A\t\t 9) NC E Row B\n 2) BC E\t 10) NC E Row D\n 3) BC W\t 11) NC E Row E\n 4) NC A\t 13) O/C\n 5) NC B\t 14) OC\n 6) NC C\t 15) OS\n 7) NC D\t 16) OS Memory Garden\n 8) NC E\n";
+				cout<< "Which section would you like to view?\n";
+				cin >> section;
 
 				res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); 
 				while (res->next()){
@@ -98,11 +123,11 @@ int main(void)
 
 			}
 
-			// Release unused resources
-			delete res;
-			delete stmt;
-			delete con;
 		}
+		// Release unused resources
+		delete res;
+		delete stmt;
+		delete con;
 	}
 	catch (sql::SQLException &e) {
 		/*
