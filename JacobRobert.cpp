@@ -113,7 +113,7 @@ SECTION.Section_ID = LOT.Section_ID WHERE GRAVE.Owner_ID IN (SELECT Owner_ID FRO
 			else if(selection == 2) {
 				//Section/Lot
 				
-				int section;
+				string section;
 				cout << "Sections:\n 1) N/A\t\t 9) NC E Row B\n 2) BC E\t 10) NC E Row D\n 3) BC W\t 11) NC E Row E\n 4) NC A\t 13) O/C\n 5) NC B\t 14) OC\n 6) NC C\t 15) 
 
 OS\n 7) NC D\t 16) OS Memory Garden\n 8) NC E\n";
@@ -125,7 +125,7 @@ OS\n 7) NC D\t 16) OS Memory Garden\n 8) NC E\n";
 					cout << " Lots in Section " << section << ":\t"<< res->getString(1) << endl; 
 					
 				}
-				string lot;
+				string lotname;
 				cout << "Enter the lot you are looking for.\n";
 				cin >> lotname;
 
