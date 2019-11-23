@@ -30,8 +30,8 @@
 #include <cppconn/prepared_statement.h>
 
 #define HOST "voyager.cs.bgsu.edu"
-#define USER "mcjacob"
-#define PASS "G5N3b7"
+#define USER "rjmoon"
+#define PASS "ftyHcW"
 #define DB "CMS4620"
 
 using namespace std;
@@ -82,9 +82,7 @@ int main(void)
 				cin >> fname;
 
 				//Query to find all owners with first name provided by user
-				res = stmt->executeQuery("SELECT First_Name, Last_Name, Address_Street, Address_City, Address_State, Address_ZIP FROM OWNER WHERE First_Name = '" + fname + 
-
-"'"); 
+				res = stmt->executeQuery("SELECT First_Name, Last_Name, Address_Street, Address_City, Address_State, Address_ZIP FROM OWNER WHERE First_Name = '" + fname + "'"); 
 
 				cout << "\n Owner Information \n";
 				while (res->next()){
@@ -96,9 +94,7 @@ int main(void)
 				cin >> lname;
 
 				//Query to find all owned graves by the owner being search for.
-				res = stmt->executeQuery("SELECT Grave_Number, Style, Lot_Name, Section_Name FROM GRAVE LEFT JOIN LOT ON LOT.Lot_ID = GRAVE.Lot_ID LEFT JOIN SECTION ON 
-
-SECTION.Section_ID = LOT.Section_ID WHERE GRAVE.Owner_ID IN (SELECT Owner_ID FROM OWNER WHERE First_Name = '" + fname + "' AND Last_Name = '" + lname + "')");
+				res = stmt->executeQuery("SELECT Grave_Number, Style, Lot_Name, Section_Name FROM GRAVE LEFT JOIN LOT ON LOT.Lot_ID = GRAVE.Lot_ID LEFT JOIN SECTION ON SECTION.Section_ID = LOT.Section_ID WHERE GRAVE.Owner_ID IN (SELECT Owner_ID FROM OWNER WHERE First_Name = '" + fname + "' AND Last_Name = '" + lname + "')");
 
 				cout << "Graves Owned by " << fname << " " << lname << endl;
 				while (res->next()) {
@@ -114,33 +110,30 @@ SECTION.Section_ID = LOT.Section_ID WHERE GRAVE.Owner_ID IN (SELECT Owner_ID FRO
 				//Section/Lot
 				
 				string section;
-				cout << "Sections:\n 1) N/A\t\t 9) NC E Row B\n 2) BC E\t 10) NC E Row D\n 3) BC W\t 11) NC E Row E\n 4) NC A\t 13) O/C\n 5) NC B\t 14) OC\n 6) NC C\t 15) 
-
-OS\n 7) NC D\t 16) OS Memory Garden\n 8) NC E\n";
+				cout << "Sections:\n 1) N/A\t\t 9) NC E Row B\n 2) BC E\t 10) NC E Row D\n 3) BC W\t 11) NC E Row E\n 4) NC A\t 13) O/C\n 5) NC B\t 14) OC\n 6) NC C\t 15) OS\n 7) NC D\t 16) OS Memory Garden\n 8) NC E\n";
 				cout<< "Which section would you like to view?\n";
 				cin >> section;
 
-				res = stmt->executeQuery("SELECT lot_Name FROM LOT WHERE Section_ID IN (SELECT Section_ID FROM SECTION where Section_Name = '" + section + "'"); 
+				//Query to find lot names in section entered by user
+				res = stmt->executeQuery("SELECT lot_Name FROM LOT JOIN SECTION ON LOT.Section_ID = SECTION.Section_ID where Section_Name = '" + section + "'"); 
+				
+				cout << " Lots in Section " << section << endl;
 				while (res->next()){
-					cout << " Lots in Section " << section << ":\t"<< res->getString(1) << endl; 
-					
+					cout << res->getString(1) << endl; 
 				}
 				string lotname;
 				cout << "Enter the lot you are looking for.\n";
 				cin >> lotname;
 
-				//Query to find the status of all graves in the lot being searched for.
-				res = stmt->executeQuery("select First_Name, Last_Name, Grave_Number, Style from OWNER LEFT JOIN GRAVE ON GRAVE.Owner_ID = OWNER.Owner_ID WHERE GRAVE.Lot_ID 
-
-IN (SELECT Lot_ID FROM LOT WHERE Lot_Name = '" + lotname + "'");
-
+				//Query to find the status of all graves in the lot entered by user.
+				res = stmt->executeQuery("SELECT Grave_Number, Style, First_Name, Last_Name FROM OWNER JOIN GRAVE ON OWNER.Owner_ID = GRAVE.Owner_ID JOIN LOT ON GRAVE.Lot_ID = LOT.Lot_ID WHERE Lot_Name = '" + lotname + "'");
 
 				cout << "Graves In Lot " << lotname << endl;
 				while (res->next()) {
-					cout << "\tFirst Name:\t" << res->getString(1) << endl;
-					cout << "\tLast Name:\t" << res->getString(2) << endl;
-					cout << "\tGrave Number:\t\t" << res->getString(3) << endl;
-					cout << "\tGrave Style:\t" << res->getString(4) << endl << endl;
+					cout << "\tGrave Number:\t" << res->getString(1) << endl;
+					cout << "\tGrave Style:\t" << res->getString(2) << endl;
+					cout << "\tFirst Name:\t" << res->getString(3) << endl;
+					cout << "\tLast Name:\t" << res->getString(4) << endl << endl;
 				}
 			}
 
